@@ -39,31 +39,40 @@ exports.handler = async (event: any) => {
         case 'getData':
             // code
             try {
-           const year = event.arguments.input.year
-           const zipcode = event.arguments.input.zipcode
-           const key = zipcode + year;
-               const params = {
-             TableName: process.env.TODOS_TABLE,
-             Key: {
-                 id: key
+                const year = event.arguments.input.year
+                const zipcode = event.arguments.input.zipcode
+                const key = zipcode + year;
+                    const params = {
+                  TableName: process.env.TODOS_TABLE,
+                  Key: {
+                      id: key
+                  }
+              };
+    
+                const todos = await docClient.get(params).promise();
+                    // format the return type to be an object as per schema
+                   let result= []
+                   for (const [key, value] of Object.entries(todos.Item)) {
+                       const data = {
+                       "date": key,
+                       "temp": value
+                       }
+                       result.push(data)
+                    }
+                    //  filter out the id (key, value)
+                    let res = result.filter((obj)=> { return obj.date != 'id'})
+       
+                return res
+                
+             } catch (err) {
+                     console.log("ERRROR", err);
+              return err;
              }
-         };
- 
-          console.log(key, "key")
-     
-           const todos = await docClient.get(params).promise();
-           return JSON.stringify(todos.Item)
-           
-        } catch (err) {
-                console.log("ERRROR", err);
-         return err;
-        }
         default:
             return "nothing"
     }
 }
 
-// "{\"24-3-2021\":\"22\",\"id\":\"22222021\",\"25-3-2021\":\"27\"}"
 
 
    

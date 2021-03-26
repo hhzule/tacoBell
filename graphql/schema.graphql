@@ -1,13 +1,14 @@
 input DataInput {
-    zipcode: String!
-    year: String
+	zipcode: String!
+	year: String
 }
-type DataOutput{
-    date: String
-    temp: String
+
+type DataOutput {
+	date: String
+	temp: Int
 }
 
 type Query {
-  getData(input: DataInput): [DataOutput]
-  getCurrent(zipcode: String): String!
+	getData(input: DataInput): [DataOutput]
+	getCurrent(zipcode: String): String!
 }
