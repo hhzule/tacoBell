@@ -5,7 +5,7 @@ input DataInput {
 
 type DataOutput {
 	date: String
-	temp: Int
+	temp: String
 }
 
 type Query {

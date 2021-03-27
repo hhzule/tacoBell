@@ -10,28 +10,14 @@ exports.handler = async (event: any) => {
         case 'getCurrent':
             try{
             // code to get current weather, and store in DynamoDB
-
-            // first get the coordinates using zipcode
-                let lat;
-                let lng;
-                const getcity = await axios.get(`https://www.zipcodeapi.com/rest/X1paJY65GOw2Rv9pGbkIIuqzpwBEZOuiuXhhPnfFbIad4HB3kqF70rL2qBiLFpHM/info.json/${event.arguments.zipcode}/degrees`)
-                    .then(function (response) {
-                  
-                    lat = response.data.lat;
-                    lng = response.data.lng
-                });
-
-                // get weather using coordinates
+                // get weather using zipcode
                 let result;
-                    const getweather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=a1c75fcafe88cc8d0c19e0ff95b22d83`)
-                    .then(function (response) {
-                    console.log(response.data.main.temp, "weahther");
-                  result = response.data.main.temp
-                });
+                const getweather = await axios.get(`https://api.weatherapi.com/v1/current.json?key=03c6f672b8c64399851185215212703&q=${event.arguments.zipcode}&aqi=no`)
+                .then(function (response) {
+                console.log(response, "weahther");
+              result = response.data.current.temp_c
+            });
 
-                // const temp = Math.floor(Math.random() * 50 + 10); // dummy temperature
-
-                // current year to make unique id with zipcode
                 const year = new Date().getFullYear();
                 // get current date
                 let today: any = new Date();
@@ -52,7 +38,7 @@ exports.handler = async (event: any) => {
                     ReturnValues: "UPDATED_NEW"
                 };
 
-                // add to dy1namoDB
+                // add to dynamoDB
                 const todos = await docClient.update(params).promise();
                 // return the weather
                 return `${result}°C`;
@@ -99,7 +85,3 @@ exports.handler = async (event: any) => {
     }
 }
 
-
-// http://www.zipcodeapi.com/rest/X1paJY65GOw2Rv9pGbkIIuqzpwBEZOuiuXhhPnfFbIad4HB3kqF70rL2qBiLFpHM/info.json/75600/radians"
-   
-// X1paJY65GOw2Rv9pGbkIIuqzpwBEZOuiuXhhPnfFbIad4HB3kqF70rL2qBiLFpHM
